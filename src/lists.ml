@@ -22,6 +22,38 @@ let rec nth l n =
 ;;
 
 
+let rec length =  function
+    | [] -> 0
+    | _ :: tl -> 1 + (length tl)
+;;
+
+
+let rec reverse = function
+    | [] -> []
+    | h :: tl -> (reverse tl) @ [h]
+;;
+
+
+
+let rec palindrome l =
+    (reverse l) = l
+;;
+
+type 'a node =
+      | One of 'a 
+      | Many of 'a node list
+
+let rec flatten l = 
+    let rec flat = function
+        | One o -> [o]
+        | Many os -> List.concat (List.map flat os)
+    in
+    match l with
+    | [] -> []
+    | n :: tl -> (flat n) @ (flatten tl)
+;;
+
+
 
     
 
