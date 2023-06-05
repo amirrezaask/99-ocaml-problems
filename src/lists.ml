@@ -54,7 +54,15 @@ let rec flatten l =
 ;;
 
 
+let rec compress l =
+   let open List in
+   match l with
+   | a :: tl -> 
+           if a = hd tl 
+           then compress tl
+           else a :: compress tl
+   | anything -> anything 
 
-    
+;;
 
 
