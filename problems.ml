@@ -50,10 +50,14 @@ let compress l =
   let rec aux l out =
     match l with
         | [] -> out
-        | x :: y :: tl when x = y -> aux tl (x :: out)
+        | x :: y :: tl when x = y -> 
+            (match out with
+            | a :: _ when a = x -> aux tl out
+            | _ -> aux tl (x :: out))
+            
         | x :: tl -> aux tl (x :: out)
   in
-  aux l []
+  aux l [] |> reverse
 ;;
 
 let () =
@@ -69,6 +73,7 @@ let () =
   let _ =
     compress
       [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ]
+        |> List.map print_endline
   in
   ()
 ;;
