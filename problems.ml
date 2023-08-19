@@ -49,15 +49,41 @@ let rec flatten l =
 let compress l =
   let rec aux l out =
     match l with
-        | [] -> out
-        | x :: y :: tl when x = y -> 
-            (match out with
-            | a :: _ when a = x -> aux tl out
-            | _ -> aux tl (x :: out))
-            
-        | x :: tl -> aux tl (x :: out)
+    | [] -> out
+    | x :: y :: tl when x = y ->
+      (match out with
+       | a :: _ when a = x -> aux tl out
+       | _ -> aux tl (x :: out))
+    | x :: tl -> aux tl (x :: out)
   in
   aux l [] |> reverse
+;;
+
+let pack l =
+  let rec aux l buffer out =
+    match l with
+    | [] -> if (length buffer) = 0 then out else buffer :: out
+    | x :: t -> (
+      match buffer with
+      | [] -> aux t [x] out
+      | y :: _ -> (if x = y then aux t (x::buffer) out else aux t [x] (buffer :: out))
+    )
+  in
+  aux l [] [] |> reverse
+;;
+
+let print_list l =
+  let open Stdio in
+  let rec aux l =
+    match l with
+    | x :: xs ->
+      printf "%s," x;
+      aux xs
+    | [] -> ()
+  in
+  printf "[";
+  aux l;
+  printf "]"
 ;;
 
 let () =
@@ -73,7 +99,26 @@ let () =
   let _ =
     compress
       [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ]
-        |> List.map print_endline
   in
+  let p =
+    pack
+      [ "a"
+      ; "a"
+      ; "a"
+      ; "a"
+      ; "b"
+      ; "c"
+      ; "c"
+      ; "a"
+      ; "a"
+      ; "d"
+      ; "d"
+      ; "e"
+      ; "e"
+      ; "e"
+      ; "e"
+      ]
+  in
+  let _ = List.map print_list p in
   ()
 ;;
