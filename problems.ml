@@ -72,6 +72,24 @@ let pack l =
   aux l [] [] |> reverse
 ;;
 
+(* No list usage *)
+let pack2 l =
+  let rec aux l out =
+    match l with
+    | [] -> out
+    | x :: t -> (
+      match out with
+      | [] -> aux t ([x] :: out)
+      | buffer :: tl ->
+        match buffer with
+        | [] -> [x] :: out
+        | y :: buffertl when x = y -> aux t ((x :: y :: buffertl) :: tl)
+        | _ -> aux t ([x] :: out)
+    )
+  in
+  aux l [] |> reverse
+;;
+
 let print_list l =
   let open Stdio in
   let rec aux l =
@@ -100,7 +118,7 @@ let () =
     compress
       [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ]
   in
-  let p =
+  let _ =
     pack
       [ "a"
       ; "a"
@@ -119,6 +137,23 @@ let () =
       ; "e"
       ]
   in
-  let _ = List.map print_list p in
+  let p2 = pack2
+  [ "a"
+  ; "a"
+  ; "a"
+  ; "a"
+  ; "b"
+  ; "c"
+  ; "c"
+  ; "a"
+  ; "a"
+  ; "d"
+  ; "d"
+  ; "e"
+  ; "e"
+  ; "e"
+  ; "e"
+  ] in
+  let _ = List.map print_list p2 in
   ()
 ;;
