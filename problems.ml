@@ -102,24 +102,23 @@ let print_list l =
   printf "]"
 ;;
 
-let print_tuple (a, b) =
-  Stdio.printf "%d, %s\n" a b
+let print_tuple (a, b) = Stdio.printf "%d, %s\n" a b
 
 let encode l =
   let rec aux list last counter out =
     match list with
-      | [] -> (match last with
-        | Some c -> (counter, c) :: out
-        | None -> out)
-      | h :: tl ->
-        match last with
-        | None -> aux tl (Some h) 1 out
-        | Some c when c = h -> aux tl (Some h) (counter+1) out
-        | Some c -> aux tl (Some h) 1 ((counter, c) :: out)
-
+    | [] ->
+      (match last with
+       | Some c -> (counter, c) :: out
+       | None -> out)
+    | h :: tl ->
+      (match last with
+       | None -> aux tl (Some h) 1 out
+       | Some c when c = h -> aux tl (Some h) (counter + 1) out
+       | Some c -> aux tl (Some h) 1 ((counter, c) :: out))
   in
-
   aux l None 0 [] |> reverse
+;;
 
 let () =
   let _ = last [ "a"; "b"; "c"; "d" ] in
@@ -132,6 +131,9 @@ let () =
   let _ = compress [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ] in
   let _ = pack [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "d"; "e"; "e"; "e"; "e" ] in
   let _ = pack2 [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "d"; "e"; "e"; "e"; "e" ] in
-  let _ = encode ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"] |> List.map print_tuple in
+  let _ =
+    encode [ "a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e" ]
+    |> List.map print_tuple
+  in
   ()
 ;;
